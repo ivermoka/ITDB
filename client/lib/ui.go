@@ -1,7 +1,9 @@
 package lib
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/awesome-gocui/gocui"
 )
@@ -20,9 +22,9 @@ func Init() {
 		log.Fatalf("Failed to set quit key combination: %v", err)
 	}
 	// input field
-	// if err := gui.SetKeybinding("input", gocui.KeyEnter, gocui.ModNone, sendMessageHandler(ws, gui)); err != nil {
-	// 	log.Fatalf("Failed to set send message key combination: %v", err)
-	// }
+	if err := gui.SetKeybinding("input", gocui.KeyEnter, gocui.ModNone, inputHandler(gui)); err != nil {
+		log.Fatalf("Failed to set send message key combination: %v", err)
+	}
 
 	// main loop til app gui
 	if err := gui.MainLoop(); err != nil && err != gocui.ErrQuit {
@@ -46,7 +48,6 @@ func layout(gui *gocui.Gui) error {
 		v.Wrap = true
 		v.Autoscroll = true
 
-		// kanskje ta bort ???
 		v.FgColor = gocui.ColorWhite 
 		v.BgColor = gocui.ColorDefault 
 		v.TitleColor = gocui.ColorYellow
@@ -69,4 +70,55 @@ func layout(gui *gocui.Gui) error {
 	}
 
 	return nil
+}
+
+func inputHandler(gui *gocui.Gui) func(*gocui.Gui, *gocui.View) error {
+	return func(gui *gocui.Gui, v *gocui.View) error {
+		input := strings.TrimSpace(v.Buffer())
+		if input == "" {
+			return nil
+		}
+
+		command, args := ParseInput(input)
+
+		switch command {
+		case "search":
+			go func() {
+				response, err := HandleSearch(args)
+				if err != nil {
+					log.Printf("Error performing search: %v", err)
+					return
+				}
+				displayResponse(gui, response)
+			}()
+		case "review":
+			go func() {
+				response, err := HandleReview(args)
+				if err != nil {
+					log.Printf("Error fetching review: %v", err)
+					return
+				}
+				displayResponse(gui, response)
+			}()
+		default:
+			displayResponse(gui, "Unknown command: "+command)
+		}
+
+		v.Clear()
+		v.SetCursor(0, 0)
+		return nil
+	}
+}
+
+
+func displayResponse(gui *gocui.Gui, response string) {
+	gui.Update(func(g *gocui.Gui) error {
+		v, err := g.View("screen")
+		if err != nil {
+			return err
+		}
+		v.Clear()
+		fmt.Fprintln(v, response)
+		return nil
+	})
 }
