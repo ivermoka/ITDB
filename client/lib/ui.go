@@ -100,6 +100,22 @@ func inputHandler(gui *gocui.Gui) func(*gocui.Gui, *gocui.View) error {
 				}
 				displayResponse(gui, response)
 			}()
+		case "register":
+			go func() {
+				response, err := HandleRegister(args)
+				if err != nil {
+					log.Printf("Error registering user: %v", err)
+				}
+				displayResponse(gui, response)
+			}()
+		case "login":
+			go func() {
+				response, err := HandleLogin(args)
+				if err != nil {
+					log.Printf("Error logging in user: %v", err)
+				}
+				displayResponse(gui, response)
+			}()
 		default:
 			displayResponse(gui, "Unknown command: "+command)
 		}

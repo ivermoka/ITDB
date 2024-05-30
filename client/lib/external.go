@@ -2,10 +2,12 @@ package lib
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 
@@ -57,4 +59,51 @@ func HandleSearch(args string) (string, error) {
 func HandleReview(args string) (string, error) {
 	// TODO: lag review funksjonalitet
 	return fmt.Sprintf("Review for %s", args), nil
+}
+
+func HandleRegister(args string) (string, error) {
+	credentials := strings.Fields(args)
+
+	if len(credentials) != 3 {
+		return "", errors.New("invalid number of credentials")
+	}
+	username := credentials[0]
+	mail := credentials[1]
+	password := credentials[2]
+
+	url := fmt.Sprintf("http://localhost:8080/auth/register?username=%s&mail=%s&password=%s", username, mail, password)
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", fmt.Errorf("Failed to register user: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("Register API responded with status: %s", resp.Status)
+	}
+
+	return fmt.Sprintf("Registered user %s. Credentials:\nUsername=%s\nMail=%s\nPassword=%s", username, username, mail, password), nil
+}
+
+func HandleLogin(args string) (string, error) {
+	credentials := strings.Fields(args)
+
+	if len(credentials) != 2 {
+		return "", errors.New("invalid number of credentials")
+	}
+	username := credentials[0]
+	password := credentials[1]
+
+	url := fmt.Sprintf("http://localhost:8080/auth/login?username=%s&password=%s", username, password)
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", fmt.Errorf("Failed to login user: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("Login API responded with status: %s", resp.Status)
+	}
+
+	return fmt.Sprintf("Logged in user %s. Credentials:\nUsername=%s\nPassword=%s", username, username, password), nil
 }
