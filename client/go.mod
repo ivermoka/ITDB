@@ -3,7 +3,11 @@ module ivermoka/ITDB
 go 1.22.1
 
 require (
-	github.com/awesome-gocui/gocui v1.1.0 // indirect
+	github.com/awesome-gocui/gocui v1.1.0
+	github.com/joho/godotenv v1.5.1
+)
+
+require (
 	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/gdamore/tcell/v2 v2.4.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.0.3 // indirect

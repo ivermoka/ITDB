@@ -6,9 +6,14 @@ import (
 	"strings"
 
 	"github.com/awesome-gocui/gocui"
+	"github.com/joho/godotenv"
 )
 
 func Init() {
+	if err := godotenv.Load(); err != nil {
+		fmt.Println("Error loading .env file")
+	}
+	
 	gui, err := gocui.NewGui(gocui.OutputNormal, false)
 	if err != nil {
 		log.Fatalf("Failed to initialize GUI: %v", err)

@@ -7,33 +7,33 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
+// func FetchDataFromAPI(title string) (string, error) {
+// 	url := fmt.Sprintf("%s/search?title=%s", os.Getenv("VM_IP"), title)
+// 	resp, err := http.Get(url)
+// 	if err != nil {
+// 		return "", fmt.Errorf("failed to fetch data from API: %w", err)
+// 	}
+// 	defer resp.Body.Close()
 
-func FetchDataFromAPI(title string) (string, error) {
-	url := fmt.Sprintf("http://localhost:8080/search?title=%s", title)
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", fmt.Errorf("failed to fetch data from API: %w", err)
-	}
-	defer resp.Body.Close()
+// 	if resp.StatusCode != http.StatusOK {
+// 		return "", fmt.Errorf("API responded with status: %s", resp.Status)
+// 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("API responded with status: %s", resp.Status)
-	}
+// 	body, err := ioutil.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return "", fmt.Errorf("failed to read response body: %w", err)
+// 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	return string(body), nil
-}
+// 	return string(body), nil
+// }
 
 func HandleSearch(args string) (string, error) {
 	encodedTitle := url.QueryEscape(args)  // hadde problemer formatet til args, så la jeg til dette, og nå funker det :0
-	url := fmt.Sprintf("http://localhost:8080/search?title=%s", encodedTitle)	
+	url := fmt.Sprintf("http://%s/search?title=%s", os.Getenv("VM_IP"), encodedTitle)	
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", fmt.Errorf("failed to perform search: %w", err)
@@ -71,7 +71,7 @@ func HandleRegister(args string) (string, error) {
 	mail := credentials[1]
 	password := credentials[2]
 
-	url := fmt.Sprintf("http://localhost:8080/auth/register?username=%s&mail=%s&password=%s", username, mail, password)
+	url := fmt.Sprintf("http://%s/auth/register?username=%s&mail=%s&password=%s", os.Getenv("VM_IP"), username, mail, password)
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", fmt.Errorf("Failed to register user: %w", err)
@@ -94,7 +94,7 @@ func HandleLogin(args string) (string, error) {
 	username := credentials[0]
 	password := credentials[1]
 
-	url := fmt.Sprintf("http://localhost:8080/auth/login?username=%s&password=%s", username, password)
+	url := fmt.Sprintf("http://%s//auth/login?username=%s&password=%s", os.Getenv("VM_IP"), username, password)
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", fmt.Errorf("Failed to login user: %w", err)
