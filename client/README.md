@@ -4,6 +4,13 @@
 
 This is the client side of the ITDB project. This program requires the server side to be set up. As I've set it up, you have to be on the same network as the server. My recommendation is to use a VPN connected to that network. That way you can connect to the server where ever you may be.
 
+Search function
+<img width="1440" alt="Screenshot 2024-05-30 at 11 51 35" src="https://github.com/ivermoka/ITDB/assets/119415554/8b4e105f-21e3-4bfb-890a-86c8aa49c00a">
+
+Login function
+<img width="1440" alt="Screenshot 2024-05-30 at 11 52 41" src="https://github.com/ivermoka/ITDB/assets/119415554/c531a8be-ba8c-46c5-b02f-0408ed40c684">
+
+
 I have not yet found a way to export the program in a way that everyone can run it as an executable. Because of that, you have to run the go program yourself. Maybe in the future i will add releases.
 
 ### Running it on your own
