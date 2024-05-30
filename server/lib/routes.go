@@ -19,6 +19,9 @@ type registerHandler struct {
 type loginHandler struct {
 	db *sql.DB
 }
+type reviewHandler struct{
+	db *sql.DB
+}
 
 func Server() {
 	db := Init()
@@ -28,6 +31,7 @@ func Server() {
 	mux.Handle("/search", &searchHandler{})
 	mux.Handle("/auth/register", &registerHandler{db})
 	mux.Handle("/auth/login", &loginHandler{db})
+	mux.Handle("/protected/review", &reviewHandler{db})
 
 	log.Println("Starting server on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
@@ -135,4 +139,24 @@ func (h *loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(jwt))
+}
+
+func (h *reviewHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	tokenString := r.Header.Get("Authorization")
+	if tokenString == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprint(w, "Missing authorization header")
+		return
+	}
+	tokenString = tokenString[len("Bearer "):]
+	
+	err := verifyToken(tokenString)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprint(w, "Invalid token")
+		return
+	}
+	
+	fmt.Fprint(w, "Welcome to the review page")
 }

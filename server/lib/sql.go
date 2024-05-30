@@ -62,3 +62,7 @@ func loginUser(db *sql.DB, username, password string) (string, error) {
 	log.Println("User logged in:", username)
 	return token, nil
 }
+
+// func reviewMovie(db *sql.DB, jwt, username string) (string, error) {
+	
+// }
