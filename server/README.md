@@ -4,6 +4,10 @@
 
 This is the server side of the ITDB project.
 
+<img width="1435" alt="Screenshot 2024-05-30 at 12 20 09" src="https://github.com/ivermoka/ITDB/assets/119415554/b19bc7b8-12da-4ca3-ab3f-295ed4a0fced">
+
+---
+
 The server side handles all of the logic. This includes communicating with the Neon PostgreSQL database and the external movie API. **In order to set up the server, you have to have a valid .env file with correct Neon (or other DBs) connection string and the OMDB api key.** I will go deeper into this later in the README.
 
 ### Running it on your own
