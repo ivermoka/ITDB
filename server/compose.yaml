@@ -6,12 +6,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    environment:
-      OMDBAPI_KEY: "86db9466"
-
+    env_file:
+      - .env
     depends_on:
       - db
   db:
     image: postgres:latest
-    environment:
-      NEON_CONN_STR: "postgresql://ivermoka:dXjIQwEAk8K9@ep-twilight-cell-35826753.eu-central-1.aws.neon.tech/ITDB?sslmode=require"
+    env_file:
+      - .env
