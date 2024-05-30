@@ -108,10 +108,14 @@ func (s *registerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := createUser(s.db, username, mail, password); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	jwt, err := createUser(s.db, username, mail, password)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(jwt))
 }
 
 func (h *loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -123,9 +127,12 @@ func (h *loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := loginUser(h.db, username, password)
+	jwt, err := loginUser(h.db, username, password)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
+	
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(jwt))
 }

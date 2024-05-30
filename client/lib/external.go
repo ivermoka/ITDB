@@ -82,7 +82,12 @@ func HandleRegister(args string) (string, error) {
 		return "", fmt.Errorf("Register API responded with status: %s", resp.Status)
 	}
 
-	return fmt.Sprintf("Registered user %s. Credentials:\nUsername=%s\nMail=%s\nPassword=%s", username, username, mail, password), nil
+	jwt, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("Failed to read response: %w", err)
+	}
+
+	return fmt.Sprintf("Registered user %s. Credentials:\nUsername=%s\nMail=%s\nPassword=%s\n%s", username, username, mail, password, jwt), nil
 }
 
 func HandleLogin(args string) (string, error) {
@@ -105,5 +110,10 @@ func HandleLogin(args string) (string, error) {
 		return "", fmt.Errorf("Login API responded with status: %s", resp.Status)
 	}
 
-	return fmt.Sprintf("Logged in user %s. Credentials:\nUsername=%s\nPassword=%s", username, username, password), nil
+	jwt, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("Failed to read response: %w", err)
+	}
+
+	return fmt.Sprintf("Logged in user %s. Credentials:\nUsername=%s\nPassword=%s\n%s", username, username, password, jwt), nil
 }
