@@ -1,0 +1,17 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      OMDBAPI_KEY: "86db9466"
+
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    environment:
+      NEON_CONN_STR: "postgresql://ivermoka:dXjIQwEAk8K9@ep-twilight-cell-35826753.eu-central-1.aws.neon.tech/ITDB?sslmode=require"
