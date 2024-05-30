@@ -121,6 +121,11 @@ func inputHandler(gui *gocui.Gui) func(*gocui.Gui, *gocui.View) error {
 				}
 				displayResponse(gui, response)
 			}()
+		case "user":
+			go func() {
+				response := HandleUser()
+				displayResponse(gui, response)
+			}()
 		default:
 			displayResponse(gui, "Unknown command: "+command)
 		}

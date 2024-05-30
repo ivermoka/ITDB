@@ -11,6 +11,13 @@ import (
 	"strings"
 )
 
+type User struct {
+	Username string
+	Jwt 	 string
+}
+
+var u User
+
 // func FetchDataFromAPI(title string) (string, error) {
 // 	url := fmt.Sprintf("%s/search?title=%s", os.Getenv("VM_IP"), title)
 // 	resp, err := http.Get(url)
@@ -61,6 +68,13 @@ func HandleReview(args string) (string, error) {
 	return fmt.Sprintf("Review for %s", args), nil
 }
 
+func HandleUser() (string) {
+	if u.Jwt == "" {
+		return fmt.Sprintf("Not logged in.")
+	}
+	return fmt.Sprintf("User infomation\nUsername:%s\nJWT:%s", u.Username, u.Jwt)
+}
+
 func HandleRegister(args string) (string, error) {
 	credentials := strings.Fields(args)
 
@@ -86,6 +100,8 @@ func HandleRegister(args string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Failed to read response: %w", err)
 	}
+	u.Jwt = string(jwt)
+	u.Username = username
 
 	return fmt.Sprintf("Registered user %s. Credentials:\nUsername=%s\nMail=%s\nPassword=%s\n%s", username, username, mail, password, jwt), nil
 }
@@ -114,6 +130,8 @@ func HandleLogin(args string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("Failed to read response: %w", err)
 	}
+	u.Jwt = string(jwt)
+	u.Username = username
 
 	return fmt.Sprintf("Logged in user %s. Credentials:\nUsername=%s\nPassword=%s\n%s", username, username, password, jwt), nil
 }
